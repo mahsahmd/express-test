@@ -5,7 +5,7 @@ import router from "./routes/posts";
 import bodyParser from "body-parser";
 import cors from "cors"
 const app = express();
-const port = 3000;
+const port = process.env.port || 5000;
 dotenv.config()
 
 // middlewares
@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     res.send('we are on home')
 })
 app.listen(port, () => {
-    console.log(`example app listening on port ${port}`);
+    console.log(`server started on port ${port}`);
 })
 
 //Connect to db
