@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import router from "./routes/posts";
 import bodyParser from "body-parser";
 import cors from "cors"
+import { errorHandler } from "./middleware/errorMiddleware";
+
 const app = express();
 const port = process.env.port || 5000;
 dotenv.config()
@@ -11,6 +13,7 @@ dotenv.config()
 // middlewares
 app.use(cors())
 app.use(bodyParser.json())
+
 //import routes
 const postRoutes = router;
 app.use('/posts', postRoutes)
@@ -21,6 +24,8 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`server started on port ${port}`);
 })
+// custome errorhandler
+app.use(errorHandler);
 
 //Connect to db
 mongoose.connect(process.env.DB_CONNECTION, () => {
