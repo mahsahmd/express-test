@@ -5,6 +5,7 @@ import router from "./routes/posts";
 import bodyParser from "body-parser";
 import cors from "cors"
 import { errorHandler } from "./middleware/errorMiddleware";
+import { connectDB } from "./config/db";
 
 const app = express();
 const port = process.env.port || 5000;
@@ -28,6 +29,4 @@ app.listen(port, () => {
 app.use(errorHandler);
 
 //Connect to db
-mongoose.connect(process.env.DB_CONNECTION, () => {
-    console.log('connected to db');
-})
+connectDB();

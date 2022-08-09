@@ -4,6 +4,6 @@ import { getPost, setPost, updatePost, deletePost, getPosts } from "../controlle
 
 
 router.route('/').get(getPosts).post(setPost);
-router.route('/:postId').get(getPost).delete(deletePost).patch(updatePost);
+router.route('/:postId').get(getPost).delete(deletePost).put(updatePost);
 
 export default router;
