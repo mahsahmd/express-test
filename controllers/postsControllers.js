@@ -1,5 +1,6 @@
 import postsModel from "../models/Posts";
-import asyncHandler from "express-async-handler"//@desc get posts
+import asyncHandler from "express-async-handler";
+//@desc get posts
 //@route Get /posts
 // @access Private
 export const getPosts = asyncHandler(async (req, res) => {
@@ -25,7 +26,7 @@ export const getPost = asyncHandler(async (req, res) => {
 //@route Post /posts
 // @access Private
 export const setPost = asyncHandler(async (req, res, next) => {
-    if (!(req.body.title && req.body.description)) {
+    if (!(req.body.title || req.body.description)) {
         res.status(400);
         throw new Error("please add title and description")
     }
@@ -41,7 +42,7 @@ export const setPost = asyncHandler(async (req, res, next) => {
 })
 
 //@desc update a post
-//@route PATCH /posts/:postid
+//@route PUT /posts/:postid
 // @access Private
 export const updatePost = asyncHandler(async (req, res) => {
     const post = await postsModel.findById(req.params.postId);
