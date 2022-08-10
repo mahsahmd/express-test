@@ -1,10 +1,11 @@
 import postsModel from "../models/Posts";
 import asyncHandler from "express-async-handler";
+import userModel from "../models/Users"
 //@desc get posts
 //@route Get /posts
 // @access Private
 export const getPosts = asyncHandler(async (req, res) => {
-    const posts = await postsModel.find();
+    const posts = await postsModel.find({ user: req.user.id });
     res.status(200).json(posts);
 
 })
@@ -32,7 +33,8 @@ export const setPost = asyncHandler(async (req, res, next) => {
     }
     const post = await postsModel.create({
         title: req.body.title,
-        description: req.body.description
+        description: req.body.description,
+        user: req.user.id
     });
 
     res.status(200).json(post)
@@ -44,13 +46,25 @@ export const setPost = asyncHandler(async (req, res, next) => {
 //@desc update a post
 //@route PUT /posts/:postid
 // @access Private
+
+
 export const updatePost = asyncHandler(async (req, res) => {
     const post = await postsModel.findById(req.params.postId);
     if (!post) {
         res.status(400);
         throw new Error('post not found')
     }
-
+    const user = await userModel.findById(req.user.id);
+    //check for user
+    if (!user) {
+        res.status(401);
+        throw new Error('user not found')
+    }
+    //make sure the logged in user matches the post user
+    if (post.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error('user not authorized')
+    }
 
     const updatedPost = await postsModel.findByIdAndUpdate(req.params.postId, req.body, {
         new: true
@@ -67,6 +81,17 @@ export const deletePost = asyncHandler(async (req, res) => {
     if (!post) {
         res.status(400);
         throw new Error('post not found')
+    }
+    const user = await userModel.findById(req.user.id);
+    //check for user
+    if (!user) {
+        res.status(401);
+        throw new Error('user not found')
+    }
+    //make sure the logged in user matches the post user
+    if (post.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error('user not authorized')
     }
     post.remove();
     res.status(200).json({ id: req.params.postId });
